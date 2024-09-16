@@ -1,2 +1,11 @@
+# Python
 venv
 .env
+__pycache__/
+migrations/
+
+# Users media
+media/
+
+# Database
+db.sqlite3
