@@ -22,8 +22,7 @@ class RealtimeData(models.Model):
     stop_time = models.FloatField(_('Stop time'), blank=False, null=False, default=0)
     tank_level = models.FloatField(_('Tank level'), blank=False, null=False, default=0)
     fluid_volume = models.FloatField(_('Fluid CM3'), blank=False, null=False, default=0)
-    #Change to one to one relation
-    machine = models.ForeignKey(('Machine'), on_delete=models.CASCADE, related_name='machineRealtimeData', null=False, blank=False)
+    machine = models.OneToOneField(('Machine'), on_delete=models.CASCADE, related_name='machineRealtimeData', null=False, blank=False)
     
     def __str__(self):
         return f'Machine: {self.machine.identifier} realtime data'
