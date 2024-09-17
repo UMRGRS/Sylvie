@@ -42,11 +42,14 @@ class CompanyUser(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(_('Username'), db_index=True, max_length=20, unique=True, null=False, blank=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    company = models.ForeignKey(('Company'), on_delete=models.CASCADE, related_name="companyUser", null=True, blank=True)
+    company = models.ForeignKey(('Company'), on_delete=models.CASCADE, related_name="companyUsers", null=True, blank=True)
     
     objects = CustomUserManager()
     
     USERNAME_FIELD = 'username'
+    
+    def __str__(self):
+        return (f'{self.company}, Username: {self.username}')
     
     class Meta:
         verbose_name = _('User')
