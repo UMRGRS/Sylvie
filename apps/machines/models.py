@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 class Machine(models.Model):
-    identifier = models.CharField(_('Machine identifier'), primary_key=True, max_length=16, blank=False, null=False, unique=True)
+    identifier = models.AutoField(_('Machine identifier'), primary_key=True, blank=False, null=False, unique=True)
     machine = models.CharField(_('Machine type'), max_length=40, blank=False, null=False)
     area = models.CharField(_('Machine location'), max_length=40, blank=False, null=False)
     company = models.ForeignKey(('users.Company'), on_delete=models.CASCADE, related_name="machines", null=False, blank=False)
