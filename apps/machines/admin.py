@@ -4,7 +4,10 @@ from .models import Machine, RealtimeData, DataLogs
 
 class DataLogsAdmin(admin.ModelAdmin):
     readonly_fields = ('time', )
+    
+class MachinesAdmin(admin.ModelAdmin):
+    readonly_fields = ('identifier', )
 
-admin.site.register(Machine)
+admin.site.register(Machine, MachinesAdmin)
 admin.site.register(RealtimeData)
 admin.site.register(DataLogs, DataLogsAdmin)

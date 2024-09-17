@@ -15,13 +15,14 @@ class Machine(models.Model):
     class Meta:
         verbose_name = _('Machine')
         verbose_name_plural = _('Machines')
-        
+
 class RealtimeData(models.Model):
     pressure = models.FloatField(_('Pressure'), blank=False, null=False, default=0)
-    work_time = models.IntegerField(_('Work time'), blank=False, null=False, default=0)
-    stop_time = models.IntegerField(_('Stop time'), blank=False, null=False, default=0)
+    work_time = models.FloatField(_('Work time'), blank=False, null=False, default=0)
+    stop_time = models.FloatField(_('Stop time'), blank=False, null=False, default=0)
     tank_level = models.FloatField(_('Tank level'), blank=False, null=False, default=0)
     fluid_volume = models.FloatField(_('Fluid CM3'), blank=False, null=False, default=0)
+    #Change to one to one relation
     machine = models.ForeignKey(('Machine'), on_delete=models.CASCADE, related_name='machineRealtimeData', null=False, blank=False)
     
     def __str__(self):
