@@ -34,11 +34,14 @@ DEBUG = True
 
 AUTH_USER_MODEL = 'users.CompanyUser'
 
+ASGI_APPLICATION = "sylvie.asgi.application"
+
 ALLOWED_HOSTS = []
 
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'apps.users.apps.UsersConfig',
     'apps.machines.apps.MachinesConfig',
     'django.contrib.admin',
@@ -87,20 +90,30 @@ WSGI_APPLICATION = 'sylvie.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
+    # SQLite
     #'default': {
     #    'ENGINE': 'django.db.backends.sqlite3',
     #    'NAME': BASE_DIR / 'db.sqlite3',
     #}
+    # Neon database
+    #'default': {
+    #    'ENGINE': 'django.db.backends.postgresql',
+    #    'NAME': config['DB_NAME'],
+    #    'USER': config['DB_USER'],
+    #    'PASSWORD': config['DB_PASSWORD'],
+    #    'HOST': config['DB_HOST'],
+    #    'PORT': config['DB_PORT'],
+    #}
+    # Local database
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config['DB_NAME'],
-        'USER': config['DB_USER'],
-        'PASSWORD': config['DB_PASSWORD'],
-        'HOST': config['DB_HOST'],
-        'PORT': config['DB_PORT'],
+        'NAME': 'devdb',
+        'USER': 'root',
+        'PASSWORD': 'lenkagamine12345',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
