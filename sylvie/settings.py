@@ -36,6 +36,15 @@ AUTH_USER_MODEL = 'users.CompanyUser'
 
 ASGI_APPLICATION = "sylvie.asgi.application"
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
+
 ALLOWED_HOSTS = []
 
 # Application definition
@@ -84,7 +93,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'sylvie.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases

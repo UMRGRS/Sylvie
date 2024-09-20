@@ -3,7 +3,7 @@ import os
 from celery import Celery
 
 # Set the default Django settings module for the 'celery' program.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'proj.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sylvie.settings')
 
 app = Celery('sylvie', result_backend='redis://localhost:6379', broker_url='redis://localhost:6379/')
 
