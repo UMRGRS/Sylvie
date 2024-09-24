@@ -34,6 +34,10 @@ DEBUG = True
 
 AUTH_USER_MODEL = 'users.CompanyUser'
 
+ALLOWED_HOSTS = []
+
+# Application definition
+
 ASGI_APPLICATION = "sylvie.asgi.application"
 
 CHANNEL_LAYERS = {
@@ -44,10 +48,6 @@ CHANNEL_LAYERS = {
         },
     },
 }
-
-ALLOWED_HOSTS = []
-
-# Application definition
 
 INSTALLED_APPS = [
     'daphne',

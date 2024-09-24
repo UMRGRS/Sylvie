@@ -5,21 +5,18 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 
 from celery.result import AsyncResult
 
-from .tasks import getMachineData
-
-import logging
-logger = logging.getLogger(__name__)
+from .tasks import get_machine_data
 
 class MachineRealtimeDataConsumer(AsyncWebsocketConsumer):
 
     task_id = None
         
     async def connect(self):
-        
+        #Check that machine pk is an int
         self.machine_pk = self.scope['url_route']['kwargs']['machine_pk']
         
-        #Create group name with random uuid and machine pk
-        self.channel_group_name = f'{uuid.uuid4().hex}-{self.machine_pk}'
+        #Create group name with uuid
+        self.channel_group_name = f'{uuid.uuid4().hex}'
         
         await self.channel_layer.group_add(
             self.channel_group_name,
@@ -27,9 +24,9 @@ class MachineRealtimeDataConsumer(AsyncWebsocketConsumer):
         )
 
         await self.accept()
+
+        task = get_machine_data.apply_async(args=[self.channel_group_name, self.machine_pk], countdown=2)
         
-        task = getMachineData.apply_async(args=[self.channel_group_name, self.machine_pk], countdown=0)
-        logger.debug("Starting the task")
         self.task_id = task.id
         
     async def disconnect(self, close_code):
@@ -50,7 +47,9 @@ class MachineRealtimeDataConsumer(AsyncWebsocketConsumer):
     
     async def send_machine_data(self, event):
         machine_data = event['machine_data']
-        
         await self.send(text_data=json.dumps({
             'machine_data' : machine_data
         }))
+        task = get_machine_data.apply_async(args=[self.channel_group_name, self.machine_pk], countdown=2)
+        
+        self.task_id = task.id
