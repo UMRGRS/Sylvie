@@ -1,4 +1,6 @@
 from channels.db import  database_sync_to_async
+from channels.exceptions import DenyConnection
+
 from knox.auth import  TokenAuthentication
 
 from django.contrib.auth.models import AnonymousUser
@@ -29,4 +31,5 @@ class TokenAuthMiddleware:
             # If token matches the required prefix, authenticate the user
             if token_name == 'Bearer' and len(token):
                 scope['user'] = await get_user(token)
+                
         return await self.app(scope, receive, send)

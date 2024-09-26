@@ -23,8 +23,8 @@ class MachineRealtimeDataConsumer(AsyncWebsocketConsumer):
         #Check if user is authenticated
         if self.scope['user'] == AnonymousUser():
             await self.accept()
-            await self.close(code=4003)
-        
+            await self.close(code=3000)
+    
         await self.channel_layer.group_add(
             self.channel_group_name,
             self.channel_name
