@@ -51,14 +51,15 @@ CHANNEL_LAYERS = {
 
 INSTALLED_APPS = [
     'daphne',
-    'apps.users.apps.UsersConfig',
-    'apps.machines.apps.MachinesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'apps.users.apps.UsersConfig',
+    'apps.machines.apps.MachinesConfig',
+    'knox',
 ]
 
 PHONENUMBER_DEFAULT_FORMAT = 'INTERNATIONAL'
@@ -73,6 +74,19 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'knox.auth.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],  
+}
+
+REST_KNOX = {
+    'AUTH_HEADER_PREFIX': 'Bearer',
+}
 
 ROOT_URLCONF = 'sylvie.urls'
 

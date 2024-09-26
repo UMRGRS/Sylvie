@@ -1,6 +1,8 @@
 import json
 import uuid
 
+from django.contrib.auth.models import AnonymousUser
+
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 from celery.result import AsyncResult
@@ -14,9 +16,14 @@ class MachineRealtimeDataConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         #Check that machine pk is an int
         self.machine_pk = self.scope['url_route']['kwargs']['machine_pk']
-        
+    
         #Create group name with uuid
         self.channel_group_name = f'{uuid.uuid4().hex}'
+
+        #Check if user is authenticated
+        if self.scope['user'] == AnonymousUser():
+            await self.accept()
+            await self.close(code=4003)
         
         await self.channel_layer.group_add(
             self.channel_group_name,
