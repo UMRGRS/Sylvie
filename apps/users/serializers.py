@@ -9,7 +9,20 @@ class CompanySerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
         
 class CompanyUserSerializer(serializers.ModelSerializer):
+        
+    def create(self, validated_data):
+        return CompanyUser.objects.create_standard_user(**validated_data)
+    
     class Meta:
         model = CompanyUser
         fields = ['id', 'username', 'password', 'company']
+        read_only_fields = ['id']
+        extra_kwargs = {'company': {'required': True}}
+        
+class CompanyUserProfileSerializer(serializers.ModelSerializer):
+    company = CompanySerializer()
+    class Meta:
+        model = CompanyUser
+        fields = ['id', 'username', 'company']
         read_only_fields = ['id', 'company']
+    

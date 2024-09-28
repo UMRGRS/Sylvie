@@ -20,20 +20,20 @@ class Company(models.Model):
         verbose_name_plural = _('Companies')
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, username, password, company_fk):
+    def create_user(self, username, password, company):
         if username is None:
             raise ValueError('Users must have a username')
-        user = self.model(username=username, company=company_fk)
+        user = self.model(username=username, company=company)
         user.set_password(password)
         return user
         
-    def create_standard_user(self, username, password, company_fk):
-        user = self.create_user(username=username, password=password, company_fk=company_fk)
+    def create_standard_user(self, username, password, company):
+        user = self.create_user(username=username, password=password, company=company)
         user.save()
         return user
     
     def create_superuser(self, username, password):
-        user = self.create_user(username=username, password=password, company_fk=None)
+        user = self.create_user(username=username, password=password, company=None)
         user.is_active, user.is_staff, user.is_superuser = True, True, True
         user.save()
         return user
