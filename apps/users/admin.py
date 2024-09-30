@@ -8,7 +8,7 @@ from .models import Company, CompanyUser
 class UserAdmin(BaseUserAdmin):
     list_display = ('username', 'company')
     fieldsets = ((None, 
-                  {'fields':('username', 'password', 'company')}), ('Permissions',{'fields':('is_superuser', 'is_staff', 'is_active')}),)
+                  {'fields':('username', 'password', 'company')}), ('Permissions',{'fields':('is_superuser', 'is_staff', 'is_active', 'is_company_admin')}),)
     add_fieldsets = ((None, {'classes': ('wide',), 'fields': ('username', 'company', 'password1', 'password2',)}),)
     readonly_fields=('is_staff', 'is_active', 'is_superuser')
     search_fields =('username',)

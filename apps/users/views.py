@@ -11,8 +11,7 @@ from .serializers import CompanySerializer, CompanyUserSerializer, CompanyUserPr
 
 from .models import Company, CompanyUser
 
-# Users views
-# Views marked as Admin- are for inner use and should not be expose yet
+# Views marked as Admin are for inner use and should not be expose yet
 
 # Company views
 class AdminCreateCompany(APIView):
@@ -54,7 +53,7 @@ class AdminUpdateDeleteUser(generics.DestroyAPIView):
     queryset = CompanyUser.objects.all()
     
     def getUser(self, pk):
-        user =  get_object_or_404(CompanyUser, pk=pk)
+        user = get_object_or_404(CompanyUser, pk=pk)
         return user
     
     def setPassword(self, user, password):
@@ -78,10 +77,11 @@ class AdminUpdateDeleteUser(generics.DestroyAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class GetUser(generics.RetrieveAPIView):
-    permission_classes = []
-    authentication_classes = []
     serializer_class = CompanyUserProfileSerializer
-    queryset = CompanyUser.objects.all()
+    
+    def get_queryset(self):
+        company = self.request.user.company
+        return CompanyUser.objects.filter(company=company)
 
 # Knox view for getting token via basic auth
 class LoginView(KnoxLoginView):

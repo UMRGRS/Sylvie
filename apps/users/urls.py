@@ -2,14 +2,14 @@ from django.urls import path
 
 from knox import views as knox_views
 
-from .views import LoginView, AdminCreateCompany, AdminGetUpdateDeleteCompany, AdminCreateUser, AdminUpdateDeleteUser, GetUser
+from .views import LoginView, GetUser, AdminCreateCompany, AdminGetUpdateDeleteCompany, AdminCreateUser, AdminUpdateDeleteUser
 
 urlpatterns = [
-     # path(r'company/', AdminCreateCompany.as_view(), name='Admin_company_register'),
-     # path(r'company/<int:pk>/', AdminGetUpdateDeleteCompany.as_view(), name='Admin_company_modify'),
-     # path(r'user/', AdminCreateUser.as_view(), name='Admin_user_register'),
-     # path(r'user/<int:pk>/', AdminUpdateDeleteUser.as_view(), name='Admin_user_register'),
-     path(r'user/<int:pk>/', GetUser.as_view(), name='Admin_user_register'),
+     # path(r'admin/company/', AdminCreateCompany.as_view(), name='admin_company_register'),
+     # path(r'admin/company/<int:pk>/', AdminGetUpdateDeleteCompany.as_view(), name='admin_company_modify'),
+     # path(r'admin/user/', AdminCreateUser.as_view(), name='admin_user_register'),
+     # path(r'admin/user/<int:pk>/', AdminUpdateDeleteUser.as_view(), name='admin_user_register'),
+     path(r'user/<int:pk>/', GetUser.as_view(), name='see_user'),
      path(r'login/', LoginView.as_view(), name='knox_login'),
      path(r'logout/', knox_views.LogoutView.as_view(), name='knox_logout'),
      path(r'logoutall/', knox_views.LogoutAllView.as_view(), name='knox_logoutall'),

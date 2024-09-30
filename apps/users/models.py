@@ -42,6 +42,7 @@ class CompanyUser(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(_('Username'), db_index=True, max_length=20, unique=True, null=False, blank=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    is_company_admin = models.BooleanField(default=False)
     company = models.ForeignKey(('Company'), on_delete=models.CASCADE, related_name="companyUsers", null=True, blank=True)
     
     objects = CustomUserManager()
