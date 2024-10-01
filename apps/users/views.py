@@ -47,7 +47,7 @@ class AdminCreateUser(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-class AdminUpdateDeleteUser(generics.DestroyAPIView):
+class AdminGetUpdateDeleteUser(generics.DestroyAPIView):
     permission_classes = [IsAdminUser, IsAuthenticated]
     serializer_class = CompanyUserSerializer
     queryset = CompanyUser.objects.all()
@@ -76,12 +76,11 @@ class AdminUpdateDeleteUser(generics.DestroyAPIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class GetUser(generics.RetrieveAPIView):
-    serializer_class = CompanyUserProfileSerializer
-    
-    def get_queryset(self):
-        company = self.request.user.company
-        return CompanyUser.objects.filter(company=company)
+class GetCurrentUser(APIView):
+    def get(self, request):
+        user = request.user
+        serializer = CompanyUserProfileSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 # Knox view for getting token via basic auth
 class LoginView(KnoxLoginView):

@@ -17,7 +17,7 @@ class AdminCreateMachine(generics.CreateAPIView):
     permission_classes = [IsAdminUser, IsAuthenticated]
     serializer_class = AdminMachineSerializer
     
-class AdminGetUpdateMachine(generics.RetrieveUpdateAPIView):
+class AdminGetUpdateDeleteMachine(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAdminUser, IsAuthenticated]
     serializer_class = AdminMachineSerializer
     queryset = Machine.objects.all()
