@@ -7,6 +7,8 @@ from rest_framework.response import Response
 from rest_framework import generics, status
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
+from cloudinary import uploader
+
 from .serializers import CompanySerializer, CompanyUserSerializer, CompanyUserProfileSerializer
 
 from .models import Company, CompanyUser
@@ -19,6 +21,14 @@ class AdminCreateCompany(APIView):
     permission_classes = [IsAdminUser, IsAuthenticated]
     
     def post(self, request):
+        
+        if 'logo' in request.data:
+            request.data._mutable = True
+            logo = request.data.pop('logo', None)[0]
+            upload_data = uploader.upload(logo)
+            request.data['logo'] = upload_data['secure_url']
+            request.data._mutable = False
+        
         serializer = CompanySerializer(data=request.data)
         
         if serializer.is_valid():

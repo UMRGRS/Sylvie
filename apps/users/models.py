@@ -9,8 +9,7 @@ class Company(models.Model):
     name = models.CharField(_('Company name'), max_length=100, unique=True, blank=False, null= False)
     email = models.EmailField(_('Contact email'), unique=True, blank=False, null=False)
     phone = PhoneNumberField(_('Contact phone'), blank=False, null=False)
-    #Remember to change to cloud solution
-    logo = models.ImageField(_('Company logo'), blank=True, null=True, upload_to='company_photos')
+    logo = models.URLField(_('Company logo'),max_length=1000, null=True, blank=True)
     
     def __str__(self):
         return self.name

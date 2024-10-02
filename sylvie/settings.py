@@ -14,14 +14,12 @@ from pathlib import Path
 
 from dotenv import dotenv_values
 
+import cloudinary
+
 config = dotenv_values('.env')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-MEDIA_ROOT = 'media/'
-
-MEDIA_URL = "media/"
  
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -38,16 +36,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-ASGI_APPLICATION = "sylvie.asgi.application"
-
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
-        },
-    },
-}
+ASGI_APPLICATION = 'sylvie.asgi.application'
 
 INSTALLED_APPS = [
     'daphne',
@@ -62,9 +51,6 @@ INSTALLED_APPS = [
     'knox',
 ]
 
-PHONENUMBER_DEFAULT_FORMAT = 'INTERNATIONAL'
-PHONENUMBER_DB_FORMAT = 'INTERNATIONAL'
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -74,6 +60,18 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
+
+PHONENUMBER_DEFAULT_FORMAT = 'INTERNATIONAL'
+PHONENUMBER_DB_FORMAT = 'INTERNATIONAL'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -89,6 +87,12 @@ REST_KNOX = {
     'AUTH_HEADER_PREFIX': 'Bearer',
     'TOKEN_LIMIT_PER_USER': 1
 }
+
+cloudinary.config(
+    cloud_name = config['CLOUD_NAME'], 
+    api_key = config['API_KEY'], 
+    api_secret = config['API_SECRET'] 
+)
 
 ROOT_URLCONF = 'sylvie.urls'
 
@@ -169,7 +173,6 @@ TIME_ZONE = 'America/Chihuahua'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
