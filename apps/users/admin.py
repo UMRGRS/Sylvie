@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 
+from .forms.company_form import CompanyForm
+
 from .models import Company, CompanyUser
 # Register your models here.
 
@@ -15,6 +17,9 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('username',)
     filter_horizontal = ()
     
-admin.site.register(Company)
+class CompanyAdmin(admin.ModelAdmin):
+    form = CompanyForm
+    
+admin.site.register(Company, CompanyAdmin)
 admin.site.register(CompanyUser, UserAdmin)
 admin.site.unregister(Group)

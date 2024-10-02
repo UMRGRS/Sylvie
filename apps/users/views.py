@@ -1,5 +1,8 @@
 from django.shortcuts import get_object_or_404
+
 from knox.views import LoginView as KnoxLoginView
+
+from cloudinary import uploader
 
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.views import APIView
@@ -7,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework import generics, status
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
-from cloudinary import uploader
+from .utils.cloudinary_images import upload_image, replace_image, delete_image
 
 from .serializers import CompanySerializer, CompanyUserSerializer, CompanyUserProfileSerializer
 
@@ -21,11 +24,10 @@ class AdminCreateCompany(APIView):
     permission_classes = [IsAdminUser, IsAuthenticated]
     
     def post(self, request):
-        
         if 'logo' in request.data:
             request.data._mutable = True
             logo = request.data.pop('logo', None)[0]
-            upload_data = uploader.upload(logo)
+            upload_data = upload_image(logo)
             request.data['logo_url'] = upload_data['secure_url']
             request.data['logo_public_id'] = upload_data['public_id']
             request.data._mutable = False
@@ -38,11 +40,34 @@ class AdminCreateCompany(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class AdminGetUpdateDeleteCompany(generics.RetrieveUpdateDestroyAPIView):
+class AdminGetUpdateDeleteCompany(generics.RetrieveDestroyAPIView):
     serializer_class = CompanySerializer
     permission_classes = [IsAdminUser, IsAuthenticated]
     queryset = Company.objects.all()
-
+    
+    def get_company(self, pk):
+        company = get_object_or_404(Company, pk=pk)
+        return company
+    
+    def patch(self, request, pk):
+        company = self.get_company(pk=pk)
+        
+        if 'logo' in request.data:
+            request.data._mutable = True
+            logo = request.data.pop('logo', None)[0]
+            upload_data = replace_image(company.logo_public_id, logo)
+            request.data['logo_url'] = upload_data['secure_url']
+            request.data['logo_public_id'] = upload_data['public_id']
+            request.data._mutable = False
+        
+        serializer = CompanySerializer(company, data=request.data, partial=True)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+  
 # Users views
 class AdminCreateUser(APIView):
     serializer_class = CompanyUser

@@ -6,7 +6,7 @@ from .views import LoginView, GetCurrentUser, AdminCreateCompany, AdminGetUpdate
 
 urlpatterns = [
      path(r'admin/company/', AdminCreateCompany.as_view(), name='admin_company_register'),
-     # path(r'admin/company/<int:pk>/', AdminGetUpdateDeleteCompany.as_view(), name='admin_company_modify'),
+     path(r'admin/company/<int:pk>/', AdminGetUpdateDeleteCompany.as_view(), name='admin_company_modify'),
      # path(r'admin/user/', AdminCreateUser.as_view(), name='admin_user_register'),
      # path(r'admin/user/<int:pk>/', AdminGetUpdateDeleteUser.as_view(), name='admin_user_register'),
      path(r'user/', GetCurrentUser.as_view(), name='see_user'),

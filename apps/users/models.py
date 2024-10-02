@@ -4,13 +4,34 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 
 from phonenumber_field.modelfields import PhoneNumberField
 
+from .utils.cloudinary_images import delete_image
+
 # Create your models here.
+class PageQuerySet(models.QuerySet):
+    def delete(self, *args, **kwargs):
+        for obj in self:
+            obj.delete()
+        super(PageQuerySet, self).delete(*args, **kwargs)
+
+class CompanyManager(models.Manager):
+    def get_queryset(self):
+        return PageQuerySet(model=self.model, using=self._db, hints=self._hints)
+
 class Company(models.Model):
     name = models.CharField(_('Company name'), max_length=100, unique=True, blank=False, null= False)
     email = models.EmailField(_('Contact email'), unique=True, blank=False, null=False)
     phone = PhoneNumberField(_('Contact phone'), blank=False, null=False)
     logo_url = models.URLField(_('Company logo'),max_length=1000, null=True, blank=True)
     logo_public_id = models.CharField(_('Company logo public id'),max_length=1000, null=True, blank=True)
+    
+    objects = CompanyManager()
+    
+    def delete(self, *args, **kwargs):
+        public_id = self.logo_public_id
+        
+        delete_image(public_id)
+
+        super().delete(*args, **kwargs)
     
     def __str__(self):
         return self.name
