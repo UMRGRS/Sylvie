@@ -26,7 +26,8 @@ class AdminCreateCompany(APIView):
             request.data._mutable = True
             logo = request.data.pop('logo', None)[0]
             upload_data = uploader.upload(logo)
-            request.data['logo'] = upload_data['secure_url']
+            request.data['logo_url'] = upload_data['secure_url']
+            request.data['logo_public_id'] = upload_data['public_id']
             request.data._mutable = False
         
         serializer = CompanySerializer(data=request.data)

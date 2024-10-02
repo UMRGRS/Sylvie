@@ -9,7 +9,8 @@ class Company(models.Model):
     name = models.CharField(_('Company name'), max_length=100, unique=True, blank=False, null= False)
     email = models.EmailField(_('Contact email'), unique=True, blank=False, null=False)
     phone = PhoneNumberField(_('Contact phone'), blank=False, null=False)
-    logo = models.URLField(_('Company logo'),max_length=1000, null=True, blank=True)
+    logo_url = models.URLField(_('Company logo'),max_length=1000, null=True, blank=True)
+    logo_public_id = models.CharField(_('Company logo public id'),max_length=1000, null=True, blank=True)
     
     def __str__(self):
         return self.name
