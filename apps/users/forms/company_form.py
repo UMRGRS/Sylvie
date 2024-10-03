@@ -22,14 +22,14 @@ class CompanyForm(forms.ModelForm):
     def save(self, commit=True):
         if not self.instance.pk and self.cleaned_data['logo']:
             upload_data = upload_image(self.cleaned_data['logo'])
-            self.instance.logo_url = upload_data['secure_url']
-            self.instance.logo_public_id = upload_data['public_id']
         elif self.instance.logo_url and self.cleaned_data['logo']:
             upload_data = replace_image(self.instance.logo_public_id, self.cleaned_data['logo'])
-            self.instance.logo_url = upload_data['secure_url']
-            self.instance.logo_public_id = upload_data['public_id']
         elif self.cleaned_data['logo']:
             upload_data = upload_image(self.cleaned_data['logo'])
+        
+        if upload_data:
             self.instance.logo_url = upload_data['secure_url']
             self.instance.logo_public_id = upload_data['public_id']
+        
         return super().save(commit)
+        

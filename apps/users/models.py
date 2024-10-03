@@ -27,9 +27,8 @@ class Company(models.Model):
     objects = CompanyManager()
     
     def delete(self, *args, **kwargs):
-        public_id = self.logo_public_id
-        
-        delete_image(public_id)
+        if self.logo_public_id:
+            delete_image(self.logo_public_id)
 
         super().delete(*args, **kwargs)
     

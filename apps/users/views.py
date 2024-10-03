@@ -2,8 +2,6 @@ from django.shortcuts import get_object_or_404
 
 from knox.views import LoginView as KnoxLoginView
 
-from cloudinary import uploader
-
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -54,12 +52,26 @@ class AdminGetUpdateDeleteCompany(generics.RetrieveDestroyAPIView):
         
         if 'logo' in request.data:
             request.data._mutable = True
-            logo = request.data.pop('logo', None)[0]
-            upload_data = replace_image(company.logo_public_id, logo)
-            request.data['logo_url'] = upload_data['secure_url']
-            request.data['logo_public_id'] = upload_data['public_id']
+            if request.data['logo'] and company.logo_public_id == None:
+                logo = request.data.pop('logo', None)[0]
+                upload_data = upload_image(logo)
+                
+            elif request.data['logo'] and company.logo_public_id != None:
+                logo = request.data.pop('logo', None)[0]
+                upload_data = replace_image(company.logo_public_id, logo)
+                
+            elif not request.data['logo']:
+                delete_image(company.logo_public_id)
+                upload_data = None
+                request.data['logo_url'] = None
+                request.data['logo_public_id'] = None
+                
+            if upload_data:
+                request.data['logo_url'] = upload_data['secure_url']
+                request.data['logo_public_id'] = upload_data['public_id']
+            
             request.data._mutable = False
-        
+             
         serializer = CompanySerializer(company, data=request.data, partial=True)
         
         if serializer.is_valid():
