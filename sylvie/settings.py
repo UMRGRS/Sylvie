@@ -9,14 +9,11 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
-from pathlib import Path
-
-from dotenv import dotenv_values
+import os
 
 import cloudinary
 
-config = dotenv_values('.env')
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,14 +22,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-kgp=c-c^k&h*8#6)%w&ahujcxbq19uv#(de6!@&s5k1j8%pmn0'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 AUTH_USER_MODEL = 'users.CompanyUser'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -53,6 +50,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -60,39 +58,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
-        },
-    },
-}
-
-PHONENUMBER_DEFAULT_FORMAT = 'INTERNATIONAL'
-PHONENUMBER_DB_FORMAT = 'INTERNATIONAL'
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'knox.auth.TokenAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
-    'DATETIME_FORMAT' : '%d/%m/%Y %H:%M'
-}
-
-REST_KNOX = {
-    'AUTH_HEADER_PREFIX': 'Bearer',
-    'TOKEN_LIMIT_PER_USER': 1
-}
-
-cloudinary.config(
-    cloud_name = config['CLOUD_NAME'], 
-    api_key = config['API_KEY'], 
-    api_secret = config['API_SECRET'] 
-)
 
 ROOT_URLCONF = 'sylvie.urls'
 
@@ -114,34 +79,85 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'sylvie.wsgi.application'
 
+# Django channels
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
+
+# Phone number field
+PHONENUMBER_DEFAULT_FORMAT = 'INTERNATIONAL'
+PHONENUMBER_DB_FORMAT = 'INTERNATIONAL'
+
+# Rest framework
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'knox.auth.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DATETIME_FORMAT' : '%d/%m/%Y %H:%M'
+}
+
+# Knox
+REST_KNOX = {
+    'AUTH_HEADER_PREFIX': 'Bearer',
+    'TOKEN_LIMIT_PER_USER': 1
+}
+
+# Cloudinary
+cloudinary.config(
+    cloud_name = os.environ.get('CLOUD_NAME'), 
+    api_key = os.environ.get('API_KEY'), 
+    api_secret = os.environ.get('API_SECRET') 
+)
+
+# Email backend
+ADMINS = [('UMR GRS', 'qxrynilp@gmail.com'),]
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_USE_TLS = True
+
+EMAIL_HOST = 'smtp.gmail.com'
+
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
+EMAIL_PORT = 587
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    # SQLite
-    #'default': {
-    #    'ENGINE': 'django.db.backends.sqlite3',
-    #    'NAME': BASE_DIR / 'db.sqlite3',
-    #}
-    # Neon database
-    #'default': {
-    #    'ENGINE': 'django.db.backends.postgresql',
-    #    'NAME': config['DB_NAME'],
-    #    'USER': config['DB_USER'],
-    #    'PASSWORD': config['DB_PASSWORD'],
-    #    'HOST': config['DB_HOST'],
-    #    'PORT': config['DB_PORT'],
-    #}
-    # Local database
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'devdb',
-        'USER': 'root',
-        'PASSWORD': 'lenkagamine12345',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
     }
 }
+
+# HTTPS
+# CSRF_COOKIE_SECURE = True
+# 
+# SESSION_COOKIE_SECURE = True
+# 
+# SECURE_SSL_REDIRECT = True
+# 
+# SECURE_HSTS_SECONDS = 3600
+# 
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# 
+# SECURE_HSTS_PRELOAD = True
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -161,8 +177,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-DATETIME_FORMAT = 'd-m-Y H:i'
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -174,10 +188,20 @@ USE_I18N = True
 
 USE_TZ = True
 
+DATETIME_FORMAT = 'd-m-Y H:i'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+
+STATIC_ROOT = 'static/'
+
+# Media files
+
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = 'media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

@@ -7,8 +7,15 @@ migrations/
 # Users media
 media/
 
+# Static files
+static/
+
 # Database
 db.sqlite3
 
 #Playground
 test_scripts/
+
+# Docker
+Dockerfile
+*.yml
