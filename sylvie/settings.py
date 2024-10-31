@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'apps.users.apps.UsersConfig',
     'apps.machines.apps.MachinesConfig',
     'knox',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -80,7 +81,10 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
-    'DATETIME_FORMAT' : '%d/%m/%Y %H:%M'
+    'DATETIME_FORMAT' : '%d/%m/%Y %H:%M',
+    
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
 }
 
 REST_KNOX = {
