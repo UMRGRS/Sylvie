@@ -31,6 +31,8 @@ AUTH_USER_MODEL = 'users.CompanyUser'
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = ['https://intent-smoothly-collie.ngrok-free.app']
+
 # Application definition
 
 ASGI_APPLICATION = 'sylvie.asgi.application'
