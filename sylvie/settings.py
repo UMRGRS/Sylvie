@@ -36,6 +36,7 @@ ALLOWED_HOSTS = ['*']
 ASGI_APPLICATION = 'sylvie.asgi.application'
 
 INSTALLED_APPS = [
+    'corsheaders',
     'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -46,9 +47,11 @@ INSTALLED_APPS = [
     'apps.users.apps.UsersConfig',
     'apps.machines.apps.MachinesConfig',
     'knox',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',

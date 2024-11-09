@@ -1,5 +1,8 @@
 from django.shortcuts import get_object_or_404
 
+from django_filters import rest_framework as filters
+
+from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics, status
@@ -10,6 +13,10 @@ from .permissions import IsCompanyAdmin
 from .serializers import MachineSerializer, AdminMachineSerializer, DataLogsSerializer
 
 from .models import Machine, DataLogs
+
+from .custom_filters import MachineFilter
+
+from .custom_paginations import MachinesPagination
 
 # Views marked as Admin- are for inner use and should not be expose yet
 
@@ -44,7 +51,8 @@ class DeleteMachine(generics.DestroyAPIView):
     def get_queryset(self):
         user_company = self.request.user.company
         return Machine.objects.filter(company=user_company)
-    
+
+# Change this to filter list view
 class GetDataLogs(APIView):    
     def get_machine(self, pk):
         machine = get_object_or_404(Machine, pk=pk)
@@ -64,3 +72,13 @@ class GetDataLogs(APIView):
         serializer = DataLogsSerializer(data_logs, many=True)
         
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class GetMachines(generics.ListAPIView):
+    serializer_class = MachineSerializer
+    filter_backends = [filters.DjangoFilterBackend]
+    filterset_class = MachineFilter
+    pagination_class = MachinesPagination
+    
+    def get_queryset(self):
+        user_company = self.request.user.company
+        return Machine.objects.filter(company=user_company)
