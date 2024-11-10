@@ -15,6 +15,8 @@ import cloudinary
 
 from pathlib import Path
 
+from corsheaders.defaults import default_headers
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
  
@@ -67,6 +69,10 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
     "http://127.0.0.1:4200",
+]
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+	"ngrok-skip-browser-warning"
 ]
 
 ROOT_URLCONF = 'sylvie.urls'
