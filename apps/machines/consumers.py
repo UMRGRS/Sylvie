@@ -14,23 +14,22 @@ class MachineRealtimeDataConsumer(AsyncWebsocketConsumer):
     task_id = None
         
     async def connect(self):
+        await self.accept()
+        
+        #Check if user is authenticated
+        if self.scope['user'] == AnonymousUser():
+            await self.close(code=3000)
+        
         #Check that machine pk is an int
         self.machine_pk = self.scope['url_route']['kwargs']['machine_pk']
     
         #Create group name with uuid
         self.channel_group_name = f'{uuid.uuid4().hex}'
 
-        #Check if user is authenticated
-        if self.scope['user'] == AnonymousUser():
-            await self.accept()
-            await self.close(code=3000)
-    
         await self.channel_layer.group_add(
             self.channel_group_name,
             self.channel_name
         )
-
-        await self.accept()
 
         task = get_machine_data.apply_async(args=[self.channel_group_name, self.machine_pk], countdown=2)
         

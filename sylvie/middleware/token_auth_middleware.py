@@ -22,14 +22,23 @@ class TokenAuthMiddleware:
         self.app = app
         
     async def __call__(self, scope, receive, send):
-        scope['user'] = AnonymousUser()
-        headers = dict(scope['headers'])
-        if b'authorization' in headers:
-            # Get authorization token from headers
-            token = headers[b'authorization'].decode()
-            token_name, token = token.split()
-            # If token matches the required prefix, authenticate the user
-            if token_name == 'Bearer' and len(token):
-                scope['user'] = await get_user(token)
+        scope['user'] = AnonymousUser() 
+        
+        query_string = scope["query_string"].decode()
+        token = self.get_token_from_query_string(query_string)
+        
+        if token:
+            # Try to authenticate user with the token
+            scope["user"] = await get_user(token)
+        else:
+            scope["user"] = AnonymousUser()
                 
         return await self.app(scope, receive, send)
+    
+    def get_token_from_query_string(self, query_string):
+        # Parse query string and retrieve token
+        try:
+            params = dict(param.split("=") for param in query_string.split("&"))
+            return params.get("token")
+        except (ValueError, KeyError):
+            return None
