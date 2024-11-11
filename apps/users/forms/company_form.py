@@ -20,6 +20,7 @@ class CompanyForm(forms.ModelForm):
             self.fields['logo'].help_text = f'Current: <a href="{instance.logo_url}">{instance.logo_url}</a>'
         
     def save(self, commit=True):
+        upload_data = None
         if not self.instance.pk and self.cleaned_data['logo']:
             upload_data = upload_image(self.cleaned_data['logo'])
         elif self.instance.logo_url and self.cleaned_data['logo']:
